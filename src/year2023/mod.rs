@@ -1,4 +1,5 @@
 pub mod day1;
+mod day10;
 pub mod day2;
 pub mod day3;
 pub mod day4;
@@ -11,25 +12,28 @@ mod day9;
 pub fn run(day: u64, part: u64, input: String) -> String {
     use std::collections::HashMap;
 
+    type SolveFn = fn(String) -> String;
     let handlers = [
-        ("1_1", day1::solve_part1 as fn(String) -> String),
-        ("1_2", day1::solve_part2 as fn(String) -> String),
-        ("2_1", day2::solve_part1 as fn(String) -> String),
-        ("2_2", day2::solve_part2 as fn(String) -> String),
-        ("3_1", day3::solve_part1 as fn(String) -> String),
-        ("3_2", day3::solve_part2 as fn(String) -> String),
-        ("4_1", day4::solve_part1 as fn(String) -> String),
-        ("4_2", day4::solve_part2 as fn(String) -> String),
-        ("5_1", day5::solve_part1 as fn(String) -> String),
-        ("5_2", day5::solve_part2 as fn(String) -> String),
-        ("6_1", day6::solve_part1 as fn(String) -> String),
-        ("6_2", day6::solve_part2 as fn(String) -> String),
-        ("7_1", day7::solve_part1 as fn(String) -> String),
-        ("7_2", day7::solve_part2 as fn(String) -> String),
-        ("8_1", day8::solve_part1 as fn(String) -> String),
-        ("8_2", day8::solve_part2 as fn(String) -> String),
-        ("9_1", day9::solve_part1 as fn(String) -> String),
-        ("9_2", day9::solve_part2 as fn(String) -> String),
+        ("1_1", day1::solve_part1 as SolveFn),
+        ("1_2", day1::solve_part2 as SolveFn),
+        ("2_1", day2::solve_part1 as SolveFn),
+        ("2_2", day2::solve_part2 as SolveFn),
+        ("3_1", day3::solve_part1 as SolveFn),
+        ("3_2", day3::solve_part2 as SolveFn),
+        ("4_1", day4::solve_part1 as SolveFn),
+        ("4_2", day4::solve_part2 as SolveFn),
+        ("5_1", day5::solve_part1 as SolveFn),
+        ("5_2", day5::solve_part2 as SolveFn),
+        ("6_1", day6::solve_part1 as SolveFn),
+        ("6_2", day6::solve_part2 as SolveFn),
+        ("7_1", day7::solve_part1 as SolveFn),
+        ("7_2", day7::solve_part2 as SolveFn),
+        ("8_1", day8::solve_part1 as SolveFn),
+        ("8_2", day8::solve_part2 as SolveFn),
+        ("9_1", day9::solve_part1 as SolveFn),
+        ("9_2", day9::solve_part2 as SolveFn),
+        ("10_1", day10::solve_part1 as SolveFn),
+        ("10_2", day10::solve_part2 as SolveFn),
     ]
     .into_iter()
     .map(|(i, f)| (i.to_owned(), f))
@@ -80,12 +84,12 @@ mod tests {
                     let start = Instant::now();
                     let actual = run(day, part, input);
                     let elapsed = start.elapsed();
+                    assert_eq!(actual, output, "Test #{i} failed");
                     println!(
                         "Test #{i} Elapsed: {}ms / {}ns",
                         elapsed.as_millis(),
                         elapsed.as_nanos()
                     );
-                    assert_eq!(actual, output, "Test #{i} failed");
                 }
                 println!("====================================================");
                 part += 1;
