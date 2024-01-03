@@ -6,6 +6,7 @@ pub mod day5;
 pub mod day6;
 pub mod day7;
 pub mod day8;
+mod day9;
 
 pub fn run(day: u64, part: u64, input: String) -> String {
     use std::collections::HashMap;
@@ -27,6 +28,8 @@ pub fn run(day: u64, part: u64, input: String) -> String {
         ("7_2", day7::solve_part2 as fn(String) -> String),
         ("8_1", day8::solve_part1 as fn(String) -> String),
         ("8_2", day8::solve_part2 as fn(String) -> String),
+        ("9_1", day9::solve_part1 as fn(String) -> String),
+        ("9_2", day9::solve_part2 as fn(String) -> String),
     ]
     .into_iter()
     .map(|(i, f)| (i.to_owned(), f))
@@ -45,8 +48,10 @@ mod tests {
 
     #[test]
     fn test_run() {
-        for day in 1..=8 {
-            for part in 1..=2 {
+        let mut day = 1;
+        while fs::metadata(format!("./dataset/2023/day{day}")).is_ok() {
+            let mut part = 1;
+            while fs::metadata(format!("./dataset/2023/day{day}/part{part}")).is_ok() {
                 let num_tests = {
                     let mut rv = -1;
                     while fs::metadata(format!(
@@ -82,9 +87,10 @@ mod tests {
                     );
                     assert_eq!(actual, output, "Test #{i} failed");
                 }
-
                 println!("====================================================");
+                part += 1;
             }
+            day += 1;
         }
     }
 }
