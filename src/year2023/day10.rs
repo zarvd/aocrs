@@ -127,16 +127,16 @@ fn part2(grid: Vec<Vec<char>>) -> u64 {
     let mut pipes = vec![(start.0 as i64, start.1 as i64)];
 
     while let Some((r, c)) = q.pop_back() {
-        let neighbors = list_connected_neighbors(&grid, r, c);
-
-        for (nr, nc) in neighbors {
-            if !visited[nr][nc] {
+        list_connected_neighbors(&grid, r, c)
+            .into_iter()
+            .find(|&(nr, nc)| !visited[nr][nc])
+            .into_iter()
+            .for_each(|(nr, nc)| {
+                // NOTE: clockwise or counterclockwise
                 visited[nr][nc] = true;
                 q.push_back((nr, nc));
                 pipes.push((nr as i64, nc as i64));
-                break; // NOTE: clockwise or counterclockwise but no random
-            }
-        }
+            });
     }
 
     ((shoelace(&pipes).abs() - pipes.len() as i64 + 3) / 2) as _

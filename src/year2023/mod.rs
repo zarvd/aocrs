@@ -1,5 +1,6 @@
 pub mod day1;
 mod day10;
+mod day11;
 pub mod day2;
 pub mod day3;
 pub mod day4;
@@ -34,6 +35,8 @@ pub fn run(day: u64, part: u64, input: String) -> String {
         ("9_2", day9::solve_part2 as SolveFn),
         ("10_1", day10::solve_part1 as SolveFn),
         ("10_2", day10::solve_part2 as SolveFn),
+        ("11_1", day11::solve_part1 as SolveFn),
+        ("11_2", day11::solve_part2 as SolveFn),
     ]
     .into_iter()
     .map(|(i, f)| (i.to_owned(), f))
@@ -69,9 +72,6 @@ mod tests {
                     rv + 1
                 };
 
-                println!("====================================================");
-                println!("Running {num_tests} tests for year 2023 - day {day} - part {part}");
-
                 for i in 0..num_tests {
                     let input =
                         fs::read_to_string(format!("./dataset/2023/day{day}/part{part}/{i}.input"))
@@ -84,14 +84,20 @@ mod tests {
                     let start = Instant::now();
                     let actual = run(day, part, input);
                     let elapsed = start.elapsed();
-                    assert_eq!(actual, output, "Test #{i} failed");
+                    assert_eq!(
+                        actual, output,
+                        "Test #{i} for year 2023 - day {day} - part {part} failed",
+                    );
                     println!(
-                        "Test #{i} Elapsed: {}ms / {}ns",
+                        "Running #{}/{} tests for year 2023 - day {:0>2} - part {}: {}ms / {}ns",
+                        i + 1,
+                        num_tests,
+                        day,
+                        part,
                         elapsed.as_millis(),
                         elapsed.as_nanos()
                     );
                 }
-                println!("====================================================");
                 part += 1;
             }
             day += 1;
