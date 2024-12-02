@@ -4,6 +4,7 @@ use std::path::PathBuf;
 use clap::Parser;
 
 mod year2023;
+mod year2024;
 
 #[derive(Debug, Parser)]
 #[command(author, version, about, long_about = None)]
@@ -29,6 +30,10 @@ fn main() {
     match args.year {
         2023 => {
             let output = year2023::run(args.day, args.part, input);
+            println!("Output:\n{output}");
+        }
+        2024 => {
+            let output = year2024::run(args.day, args.part, input);
             println!("Output:\n{output}");
         }
         y => panic!("Unknown year: {y}"),
