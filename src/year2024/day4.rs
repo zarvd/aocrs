@@ -6,12 +6,16 @@ pub fn solve_part2(input: String) -> String {
     part2(&input).to_string()
 }
 
-fn part1(input: &str) -> u64 {
-    let grid: Vec<_> = input
+fn read_grid(input: &str) -> Vec<Vec<u8>> {
+    input
         .split('\n')
         .filter(|l| !l.is_empty())
         .map(|l| l.as_bytes().to_vec())
-        .collect();
+        .collect()
+}
+
+fn part1(input: &str) -> u64 {
+    let grid = read_grid(input);
 
     let r = grid.len();
     let c = grid[0].len();
@@ -67,12 +71,7 @@ fn search_part1(grid: &[Vec<u8>], i: usize, j: usize) -> u64 {
 }
 
 fn part2(input: &str) -> u64 {
-    let grid: Vec<_> = input
-        .split('\n')
-        .filter(|l| !l.is_empty())
-        .map(|l| l.as_bytes().to_vec())
-        .collect();
-
+    let grid = read_grid(input);
     let r = grid.len();
     let c = grid[0].len();
 

@@ -24,3 +24,63 @@ pub fn run(day: u64, part: u64, input: String) -> String {
     let id = format!("{}_{}", day, part);
     handlers.get(&id).unwrap()(input)
 }
+
+#[cfg(test)]
+mod tests {
+    use std::fs;
+    use std::time::Instant;
+
+    use super::run;
+
+    #[test]
+    fn test_run() {
+        let mut day = 1;
+        while fs::metadata(format!("./dataset/2024/day{day}")).is_ok() {
+            let mut part = 1;
+            while fs::metadata(format!("./dataset/2024/day{day}/part{part}")).is_ok() {
+                let num_tests = {
+                    let mut rv = -1;
+                    while fs::metadata(format!(
+                        "./dataset/2024/day{day}/part{part}/{}.input",
+                        rv + 1
+                    ))
+                    .is_ok()
+                    {
+                        rv += 1;
+                    }
+                    rv + 1
+                };
+
+                for i in 0..num_tests {
+                    let input =
+                        fs::read_to_string(format!("./dataset/2024/day{day}/part{part}/{i}.input"))
+                            .expect("read test input");
+                    let output = fs::read_to_string(format!(
+                        "./dataset/2024/day{day}/part{part}/{i}.output"
+                    ))
+                    .expect("read test output");
+
+                    let start = Instant::now();
+                    let actual = run(day, part, input);
+                    let elapsed = start.elapsed();
+                    assert_eq!(
+                        actual,
+                        output.trim(),
+                        "Test #{i} for year 2024 - day {day} - part {part} failed",
+                    );
+                    println!(
+                        "Running #{}/{} tests for year 2024 - day {:0>2} - part {}: {}ms / {}ns",
+                        i + 1,
+                        num_tests,
+                        day,
+                        part,
+                        elapsed.as_millis(),
+                        elapsed.as_nanos()
+                    );
+                }
+                part += 1;
+            }
+            day += 1;
+        }
+    }
+}
