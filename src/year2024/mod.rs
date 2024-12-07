@@ -4,6 +4,7 @@ mod day3;
 mod day4;
 mod day5;
 mod day6;
+mod day7;
 
 pub fn run(day: u64, part: u64, input: String) -> String {
     use std::collections::HashMap;
@@ -22,6 +23,8 @@ pub fn run(day: u64, part: u64, input: String) -> String {
         ("5_2", day5::solve_part2 as SolveFn),
         ("6_1", day6::solve_part1 as SolveFn),
         ("6_2", day6::solve_part2 as SolveFn),
+        ("7_1", day7::solve_part1 as SolveFn),
+        ("7_2", day7::solve_part2 as SolveFn),
     ]
     .into_iter()
     .map(|(i, f)| (i.to_owned(), f))
