@@ -1,9 +1,10 @@
+use std::fmt::Debug;
+use std::path::Path;
+
 use anyhow::Result;
 use clap::{Parser, Subcommand};
 use console::style;
 use duct::cmd;
-use std::fmt::Debug;
-use std::path::Path;
 
 #[derive(Parser, Debug)]
 #[command(author, version, about, long_about = None)]
