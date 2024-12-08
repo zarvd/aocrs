@@ -1,3 +1,5 @@
+use crate::Grid;
+
 pub fn solve_part1(input: String) -> String {
     part1(&input).to_string()
 }
@@ -6,24 +8,13 @@ pub fn solve_part2(input: String) -> String {
     part2(&input).to_string()
 }
 
-fn read_grid(input: &str) -> Vec<Vec<u8>> {
-    input
-        .split('\n')
-        .filter(|l| !l.is_empty())
-        .map(|l| l.as_bytes().to_vec())
-        .collect()
-}
-
 fn part1(input: &str) -> u64 {
-    let grid = read_grid(input);
-
-    let r = grid.len();
-    let c = grid[0].len();
+    let grid = Grid::from_str(input);
 
     let mut rv = 0;
-    for i in 0..r {
-        for j in 0..c {
-            if grid[i][j] != b'X' {
+    for i in 0..grid.rows() {
+        for j in 0..grid.cols() {
+            if grid.get(i, j) != &b'X' {
                 continue;
             }
             rv += search_part1(&grid, i, j);
@@ -33,10 +24,7 @@ fn part1(input: &str) -> u64 {
     rv
 }
 
-fn search_part1(grid: &[Vec<u8>], i: usize, j: usize) -> u64 {
-    let r = grid.len() as i32;
-    let c = grid[0].len() as i32;
-
+fn search_part1(grid: &Grid<u8>, i: usize, j: usize) -> u64 {
     let mut rv = 0;
 
     let candidates = {
@@ -54,15 +42,13 @@ fn search_part1(grid: &[Vec<u8>], i: usize, j: usize) -> u64 {
     };
 
     for line in candidates {
-        if line
-            .iter()
-            .any(|&(x, y)| x < 0 || y < 0 || x >= r || y >= c)
-        {
+        if line.iter().any(|&(x, y)| !grid.in_range(x, y)) {
             continue;
         }
-        if grid[line[0].0 as usize][line[0].1 as usize] == b'M'
-            && grid[line[1].0 as usize][line[1].1 as usize] == b'A'
-            && grid[line[2].0 as usize][line[2].1 as usize] == b'S'
+
+        if grid.get(line[0].0, line[0].1) == &b'M'
+            && grid.get(line[1].0, line[1].1) == &b'A'
+            && grid.get(line[2].0, line[2].1) == &b'S'
         {
             rv += 1
         }
@@ -71,14 +57,12 @@ fn search_part1(grid: &[Vec<u8>], i: usize, j: usize) -> u64 {
 }
 
 fn part2(input: &str) -> u64 {
-    let grid = read_grid(input);
-    let r = grid.len();
-    let c = grid[0].len();
+    let grid = Grid::from_str(input);
 
     let mut rv = 0;
-    for i in 1..r - 1 {
-        for j in 1..c - 1 {
-            if grid[i][j] != b'A' {
+    for i in 1..grid.rows() - 1 {
+        for j in 1..grid.cols() - 1 {
+            if grid.get(i, j) != &b'A' {
                 continue;
             }
             rv += search_part2(&grid, i, j);
@@ -88,14 +72,14 @@ fn part2(input: &str) -> u64 {
     rv
 }
 
-fn search_part2(grid: &[Vec<u8>], i: usize, j: usize) -> u64 {
-    if !(grid[i - 1][j - 1] == b'M' && grid[i + 1][j + 1] == b'S')
-        && !(grid[i - 1][j - 1] == b'S' && grid[i + 1][j + 1] == b'M')
+fn search_part2(grid: &Grid<u8>, i: usize, j: usize) -> u64 {
+    if !(grid.get(i - 1, j - 1) == &b'M' && grid.get(i + 1, j + 1) == &b'S')
+        && !(grid.get(i - 1, j - 1) == &b'S' && grid.get(i + 1, j + 1) == &b'M')
     {
         return 0;
     }
-    if !(grid[i - 1][j + 1] == b'M' && grid[i + 1][j - 1] == b'S')
-        && !(grid[i - 1][j + 1] == b'S' && grid[i + 1][j - 1] == b'M')
+    if !(grid.get(i - 1, j + 1) == &b'M' && grid.get(i + 1, j - 1) == &b'S')
+        && !(grid.get(i - 1, j + 1) == &b'S' && grid.get(i + 1, j - 1) == &b'M')
     {
         return 0;
     }

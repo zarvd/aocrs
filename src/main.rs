@@ -3,8 +3,11 @@ use std::path::PathBuf;
 
 use clap::Parser;
 
+mod grid;
 mod year2023;
 mod year2024;
+
+use grid::Grid;
 
 #[derive(Debug, Parser)]
 #[command(author, version, about, long_about = None)]

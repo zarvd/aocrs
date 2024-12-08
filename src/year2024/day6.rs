@@ -1,3 +1,5 @@
+use crate::Grid;
+
 pub fn solve_part1(input: String) -> String {
     part1(&input).to_string()
 }
@@ -48,19 +50,10 @@ impl Direction {
     }
 }
 
-fn read_grid(input: &str) -> Vec<Vec<u8>> {
-    input
-        .split('\n')
-        .filter(|l| !l.is_empty())
-        .map(|l| l.as_bytes().to_vec())
-        .collect()
-}
-
-fn find_start_point(grid: &[Vec<u8>]) -> (usize, usize) {
-    let (r, c) = (grid.len(), grid[0].len());
-    for i in 0..r {
-        for j in 0..c {
-            if grid[i][j] == b'^' {
+fn find_start_point(grid: &Grid<u8>) -> (usize, usize) {
+    for i in 0..grid.rows() {
+        for j in 0..grid.cols() {
+            if grid.get(i, j) == &b'^' {
                 return (i, j);
             }
         }
@@ -68,36 +61,35 @@ fn find_start_point(grid: &[Vec<u8>]) -> (usize, usize) {
     unreachable!()
 }
 
-fn traverse(grid: &Vec<Vec<u8>>, mut p: (usize, usize)) -> Option<u64> {
-    let (r, c) = (grid.len(), grid[0].len());
+fn traverse(grid: &Grid<u8>, mut p: (usize, usize)) -> Option<u64> {
     let mut d = Direction::Up;
-    let mut visited = vec![vec![0u8; c]; r];
-    visited[p.0][p.1] = d.mask();
+    let mut visited = Grid::with_default(grid.rows(), grid.cols(), 0u8);
+    visited.set(p.0, p.1, d.mask());
 
     loop {
         let next = d.apply_delta(p);
-        if next.0 < 0 || next.0 >= r as i64 || next.1 < 0 || next.1 >= c as i64 {
+        if !grid.in_range(next.0, next.1) {
             break;
         }
-        match grid[next.0 as usize][next.1 as usize] {
+        match grid.get(next.0, next.1) {
             b'#' => {
                 d = d.next();
                 continue;
             }
             _ => {
-                if visited[next.0 as usize][next.1 as usize] & d.mask() > 0 {
+                if visited.get(next.0, next.1) & d.mask() > 0 {
                     return None;
                 }
                 p = (next.0 as usize, next.1 as usize);
-                visited[next.0 as usize][next.1 as usize] |= d.mask();
+                visited.set(next.0, next.1, visited.get(next.0, next.1) | d.mask());
             }
         }
     }
 
     let mut rv = 0;
-    for i in 0..r {
-        for j in 0..c {
-            if visited[i][j] > 0 {
+    for i in 0..visited.rows() {
+        for j in 0..visited.cols() {
+            if visited.get(i, j) > &0 {
                 rv += 1;
             }
         }
@@ -107,26 +99,25 @@ fn traverse(grid: &Vec<Vec<u8>>, mut p: (usize, usize)) -> Option<u64> {
 }
 
 fn part1(input: &str) -> u64 {
-    let grid = read_grid(input);
+    let grid = Grid::from_str(input);
     let p = find_start_point(&grid);
 
     traverse(&grid, p).unwrap()
 }
 
 fn part2(input: &str) -> u64 {
-    let mut grid = read_grid(input);
-    let (r, c) = (grid.len(), grid[0].len());
+    let mut grid = Grid::from_str(input);
 
     let p = find_start_point(&grid);
     let mut rv = 0;
-    for i in 0..r {
-        for j in 0..c {
-            if grid[i][j] == b'.' {
-                grid[i][j] = b'#';
+    for i in 0..grid.rows() {
+        for j in 0..grid.cols() {
+            if grid.get(i, j) == &b'.' {
+                grid.set(i, j, b'#');
                 if traverse(&grid, p).is_none() {
                     rv += 1;
                 }
-                grid[i][j] = b'.';
+                grid.set(i, j, b'.');
             }
         }
     }
