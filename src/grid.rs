@@ -1,4 +1,5 @@
 use std::fmt;
+use std::fmt::Formatter;
 
 pub struct Grid<V> {
     inner: Vec<Vec<V>>,
@@ -60,6 +61,23 @@ impl<V> Grid<V> {
     }
 
     #[inline]
+    pub fn try_set<R, C>(&mut self, row: R, col: C, value: V) -> Option<V>
+    where
+        R: TryInto<i64> + fmt::Debug + Copy,
+        <R as TryInto<i64>>::Error: fmt::Debug,
+        C: TryInto<i64> + fmt::Debug + Copy,
+        <C as TryInto<i64>>::Error: fmt::Debug,
+    {
+        if !self.in_range(row, col) {
+            return None;
+        }
+
+        let row = row.try_into().unwrap() as usize;
+        let col = col.try_into().unwrap() as usize;
+        Some(self.set(row, col, value))
+    }
+
+    #[inline]
     pub fn get<R, C>(&self, row: R, col: C) -> &V
     where
         R: TryInto<usize> + fmt::Debug,
@@ -93,7 +111,7 @@ impl<V> Grid<V> {
         C: TryInto<i64> + fmt::Debug + Copy,
         <C as TryInto<i64>>::Error: fmt::Debug,
     {
-        if self.in_range(row, col) {
+        if !self.in_range(row, col) {
             return None;
         }
 
@@ -101,5 +119,29 @@ impl<V> Grid<V> {
         let col = col.try_into().unwrap();
 
         Some(&self.inner[row as usize][col as usize])
+    }
+}
+
+impl fmt::Display for Grid<u8> {
+    fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
+        for row in &self.inner {
+            for col in row {
+                write!(f, "{}", *col as char)?;
+            }
+            writeln!(f)?;
+        }
+        Ok(())
+    }
+}
+
+impl fmt::Display for Grid<bool> {
+    fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
+        for row in &self.inner {
+            for col in row {
+                write!(f, "{}", if *col { 1 } else { 0 })?;
+            }
+            writeln!(f)?;
+        }
+        Ok(())
     }
 }
