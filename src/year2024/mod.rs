@@ -1,4 +1,5 @@
 mod day1;
+mod day10;
 mod day2;
 mod day3;
 mod day4;
@@ -31,6 +32,8 @@ pub fn run(day: u64, part: u64, input: String) -> String {
         ("8_2", day8::solve_part2 as SolveFn),
         ("9_1", day9::solve_part1 as SolveFn),
         ("9_2", day9::solve_part2 as SolveFn),
+        ("10_1", day10::solve_part1 as SolveFn),
+        ("10_2", day10::solve_part2 as SolveFn),
     ]
     .into_iter()
     .map(|(i, f)| (i.to_owned(), f))
