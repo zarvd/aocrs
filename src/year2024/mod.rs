@@ -1,5 +1,6 @@
 mod day1;
 mod day10;
+mod day11;
 mod day2;
 mod day3;
 mod day4;
@@ -34,6 +35,8 @@ pub fn run(day: u64, part: u64, input: String) -> String {
         ((9, 2), day9::solve_part2 as SolveFn),
         ((10, 1), day10::solve_part1 as SolveFn),
         ((10, 2), day10::solve_part2 as SolveFn),
+        ((11, 1), day11::solve_part1 as SolveFn),
+        ((11, 2), day11::solve_part2 as SolveFn),
     ]
     .into_iter()
     .collect::<HashMap<_, _>>();
@@ -134,5 +137,11 @@ mod tests {
     fn test_day10() {
         run_test_with_dataset(10, 1);
         run_test_with_dataset(10, 2);
+    }
+
+    #[test]
+    fn test_day11() {
+        run_test_with_dataset(11, 1);
+        run_test_with_dataset(11, 2);
     }
 }
